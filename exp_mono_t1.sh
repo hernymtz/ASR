@@ -1,4 +1,4 @@
-# Exp_mono_word 2
+# Exp_mono
 # Open Kaldi  Working directory
 cd ~/asrworkdir
 source path.sh
@@ -9,7 +9,7 @@ source path.sh
 # Gather files for word recognition
 #./local/lab3_setup.sh
 
-# For loop counter variable
+# Counter variable
 num=1
 
 # All WER Values variable
@@ -18,13 +18,11 @@ allWERval=""
 # Comma variable for CSV files
 initComma=""
 
-# Test string
-string2=43.2
 
 
 # For-loop: Train model and save number of gaussians,  WER value and elapsed time
 #-------------
-for gauss in 5500 6000 6500 7000 7500 8000 8500 9000 9500
+for gauss in 7300 7400 7600 7700
 do
 
 # Erase previous models
@@ -65,7 +63,7 @@ comma=","
 END=$(date +%s.%N)
 DIFF=$(echo "$END - $START" | bc)
 
-# Set final values for Gaussians, WER and time
+# Set values for Gaussians, WER and time
 allWERval=$allWERval$initComma$gauss$comma$WER$comma$DIFF
 
 #Save to CSV file
@@ -74,7 +72,7 @@ FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/logfile.csv"
 $allWERval
 EOM
 
-# Increase loop counter
+# Increase num counter
 num=$((num+1))
 initComma=","
 
