@@ -44,8 +44,7 @@ echo "Number of Gaussians  is $gauss"
 
 
 #Training
-my-local/train_monoDelta.sh --delta_opts\"--delta-order=$deltaNum --totgauss $gauss  --nj 4 data/train_words data/lang_wsj exp/word/mono
-
+my-local/train_monoDelta.sh  --delta_opts \"--delta-order=$deltaNum\" --totgauss $gauss  --nj 4 data/train_words data/lang_wsj exp/word/mono
 
 #Testing
 utils/mkgraph.sh --mono data/lang_wsj_test_bg \
