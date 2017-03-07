@@ -18,11 +18,16 @@ allWERval=""
 # Comma variable for CSV files
 initComma=""
 
+# Initialize top WER value variable
+topWER=0
+
+# Initialize top gaussian value
+topGauss=0
 
 
 # For-loop: Train model and save number of gaussians,  WER value and elapsed time
 #-------------
-for gauss in 7300 7400 7600 7700
+for gauss in  9300 9400 9600 9700
 do
 
 # Erase previous models
@@ -55,9 +60,25 @@ cat exp/word/mono/decode_test/scoring_kaldi/best_wer
 stringWER=$(cat exp/word/mono/decode_test/scoring_kaldi/best_wer)
 WER=${stringWER:5:4}
 
+#///////////////////
+
+
+WER10=$(echo "scale=4; $WER*10" |bc)
+WER10=$( printf "%.0f" $WER10 )
+
+if [ "${WER10:-0}" -lt "${topWER:-0}" ];then
+topWER=$WER
+topGauss=$gauss
+fi
+
+
+#///////////////////
+
+
+
+
 # Set comma variable
 comma=","
-
 
 # End timer
 END=$(date +%s.%N)
@@ -66,11 +87,18 @@ DIFF=$(echo "$END - $START" | bc)
 # Set values for Gaussians, WER and time
 allWERval=$allWERval$initComma$gauss$comma$WER$comma$DIFF
 
-#Save to CSV file
+#Save all WER values to CSV file
 FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/logfile.csv"
 /bin/cat <<EOM>$FILE
 $allWERval
 EOM
+
+#Save top WER value and Gauss number
+FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/topGauss.txt"
+/bin/cat <<EOM>$FILE
+$topGauss
+EOM
+
 
 # Increase num counter
 num=$((num+1))
