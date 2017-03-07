@@ -24,12 +24,12 @@ topWER=0
 # Initialize top gaussian value
 topGauss=0
 
-# Set delta configuration
-deltaNum=0
+# Set delta configuration = ( 0-no delta, 1-delta, 2-double delta)
+deltaNum=2
 
 # For-loop: Train model and save number of gaussians,  WER value and elapsed time
 #-------------
-for gauss in  10
+for gauss in  100 500 1000 5000 7500 10000
 do
 
 # Erase previous models
