@@ -19,15 +19,15 @@ allWERval=""
 initComma=""
 
 # Initialize top WER value variable
-topWER=0
+topWER=1000
 
 # Initialize top gaussian value
-topGauss=0
+topGauss=
 
 
 # For-loop: Train model and save number of gaussians,  WER value and elapsed time
 #-------------
-for gauss in  9300 9400 9600 9700
+for gauss in 100 500 750 1000 5000 5500 6000 6500 7000 7300 7400 7500 7600 7700 8000 8500 9000 9300 9400 9500 9600 9700 10000 12500 15000
 do
 
 # Erase previous models
@@ -41,11 +41,12 @@ echo "Currently running  step $num ."
 echo "Number of Gaussians  is $gauss"
 
 
-#Training
+# Training
 steps/train_mono.sh --totgauss $gauss  --nj 4 data/train_words data/lang_wsj exp/word/mono
 
 
-#Testing
+
+#Decoding
 utils/mkgraph.sh --mono data/lang_wsj_test_bg \
 exp/word/mono exp/word/mono/graph
 
@@ -62,7 +63,7 @@ WER=${stringWER:5:4}
 
 #///////////////////
 
-
+# Convert WER value so that it can be used in if
 WER10=$(echo "scale=4; $WER*10" |bc)
 WER10=$( printf "%.0f" $WER10 )
 
@@ -73,8 +74,6 @@ fi
 
 
 #///////////////////
-
-
 
 
 # Set comma variable
@@ -93,8 +92,8 @@ FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/logfile.csv"
 $allWERval
 EOM
 
-#Save top WER value and Gauss number
-FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/topGauss.txt"
+Save top WER value and Gauss number
+FILE="/afs/inf.ed.ac.uk/user/s16/s1659809/asrworkdir/my-local/bestGauss.txt"
 /bin/cat <<EOM>$FILE
 $topGauss
 EOM
@@ -107,6 +106,17 @@ initComma=","
 done
 #--------------
 # End for-loop
+cd ~/asrworkdir
+source path.sh
 
+
+# Create top-WER-value model
+# Training
+rm -rf exp/word/mono_best_t1
+
+topGauss=`cat my-local/bestGauss.txt`
+echo "$topGauss"
+
+steps/train_mono.sh --totgauss $topGauss --nj 4 data/train_words data/lang_wsj my-local/mono_best_t1
 
 
